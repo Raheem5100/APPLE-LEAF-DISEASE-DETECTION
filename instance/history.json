@@ -1,0 +1,212 @@
+[
+  {
+    "id": "3ca3b762",
+    "timestamp": "2026-05-13T18:29:58.651707",
+    "filename": "3ba7cf8cada542c29fc898e8507375e4_image_32.JPG",
+    "predicted_class": "Apple___healthy",
+    "display_name": "Healthy",
+    "confidence": 39.84,
+    "severity": "None",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 26.45,
+      "Apple___Apple_scab": 16.05,
+      "Apple___healthy": 39.84,
+      "Apple___Black_rot": 17.66
+    }
+  },
+  {
+    "id": "6f281d51",
+    "timestamp": "2026-05-13T18:29:36.781018",
+    "filename": "d33a54134f8a40748f4b77423f1acc8e_temp_efd99bd45e5b42c898912b40c7383391_green-leaf-on-a-white-background-photo.jpeg",
+    "predicted_class": "Apple___Black_rot",
+    "display_name": "Black Rot",
+    "confidence": 57.93,
+    "severity": "Severe",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 5.56,
+      "Apple___Apple_scab": 23.39,
+      "Apple___healthy": 13.12,
+      "Apple___Black_rot": 57.93
+    }
+  },
+  {
+    "id": "f2317615",
+    "timestamp": "2026-05-13T18:29:12.778581",
+    "filename": "59d121bc31a745988f01f7daae1d71f6_temp_5bf57e998d2c42638da82d6a4ba64cb7_image_1_2.JPG",
+    "predicted_class": "Apple___Cedar_apple_rust",
+    "display_name": "Cedar Apple Rust",
+    "confidence": 37.72,
+    "severity": "Moderate",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 37.72,
+      "Apple___Apple_scab": 31.79,
+      "Apple___healthy": 10.36,
+      "Apple___Black_rot": 20.14
+    }
+  },
+  {
+    "id": "161dc988",
+    "timestamp": "2026-05-13T18:28:42.169054",
+    "filename": "80794fd7047c46e5b192c44b64aa0ed0_image_109.JPG",
+    "predicted_class": "Apple___Apple_scab",
+    "display_name": "Apple Scab",
+    "confidence": 69.06,
+    "severity": "High",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 8.25,
+      "Apple___Apple_scab": 69.06,
+      "Apple___healthy": 9.86,
+      "Apple___Black_rot": 12.83
+    }
+  },
+  {
+    "id": "36a1ff8c",
+    "timestamp": "2026-05-13T18:28:29.865645",
+    "filename": "af7ca2ebfcbe47b49fe55e61d2e37b41_image_63.JPG",
+    "predicted_class": "Apple___Apple_scab",
+    "display_name": "Apple Scab",
+    "confidence": 33.8,
+    "severity": "High",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 28.36,
+      "Apple___Apple_scab": 33.8,
+      "Apple___healthy": 16.58,
+      "Apple___Black_rot": 21.26
+    }
+  },
+  {
+    "id": "8a4b568a",
+    "timestamp": "2026-05-13T18:28:10.708253",
+    "filename": "8e7f84cb889641e0bb197486ddfa5fb7_image_41.JPG",
+    "predicted_class": "Apple___Apple_scab",
+    "display_name": "Apple Scab",
+    "confidence": 32.17,
+    "severity": "High",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 4.96,
+      "Apple___Apple_scab": 32.17,
+      "Apple___healthy": 31.56,
+      "Apple___Black_rot": 31.31
+    }
+  },
+  {
+    "id": "e3a5a3c4",
+    "timestamp": "2026-05-13T18:27:48.597597",
+    "filename": "c9f5fadb5e0f493c9ce65ec55f3f0f6d_image_1.JPG",
+    "predicted_class": "Apple___Apple_scab",
+    "display_name": "Apple Scab",
+    "confidence": 45.42,
+    "severity": "High",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 23.73,
+      "Apple___Apple_scab": 45.42,
+      "Apple___healthy": 15.26,
+      "Apple___Black_rot": 15.59
+    }
+  },
+  {
+    "id": "70ad188b",
+    "timestamp": "2026-05-13T18:27:23.043222",
+    "filename": "923f4dc385ab444d89583aa9be3efdab_image_8.JPG",
+    "predicted_class": "Apple___Cedar_apple_rust",
+    "display_name": "Cedar Apple Rust",
+    "confidence": 56.44,
+    "severity": "Moderate",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 56.44,
+      "Apple___Apple_scab": 29.2,
+      "Apple___healthy": 5.88,
+      "Apple___Black_rot": 8.49
+    }
+  },
+  {
+    "id": "5772acca",
+    "timestamp": "2026-05-13T18:17:03.035379",
+    "filename": "b20cee5926254fb390feaaa7bc067c5f_temp_5bf57e998d2c42638da82d6a4ba64cb7_image_1_2.JPG",
+    "predicted_class": "Apple___Cedar_apple_rust",
+    "display_name": "Cedar Apple Rust",
+    "confidence": 44.48,
+    "severity": "Moderate",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 44.48,
+      "Apple___Apple_scab": 9.0,
+      "Apple___healthy": 15.48,
+      "Apple___Black_rot": 31.04
+    }
+  },
+  {
+    "id": "f5eb5df0",
+    "timestamp": "2026-05-13T18:15:24.449892",
+    "filename": "1bbe27ad7a8c4c099c5bb77c233a8915_image_177.JPG",
+    "predicted_class": "Apple___Black_rot",
+    "display_name": "Black Rot",
+    "confidence": 40.74,
+    "severity": "Severe",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 28.53,
+      "Apple___Apple_scab": 21.88,
+      "Apple___healthy": 8.86,
+      "Apple___Black_rot": 40.74
+    }
+  },
+  {
+    "id": "4249d599",
+    "timestamp": "2026-05-13T18:15:03.164926",
+    "filename": "e8447245682b43d48497a58e7761d273_image_1629.JPG",
+    "predicted_class": "Apple___Black_rot",
+    "display_name": "Black Rot",
+    "confidence": 38.07,
+    "severity": "Severe",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 12.63,
+      "Apple___Apple_scab": 32.21,
+      "Apple___healthy": 17.09,
+      "Apple___Black_rot": 38.07
+    }
+  },
+  {
+    "id": "d582f1d1",
+    "timestamp": "2026-05-13T18:14:53.653988",
+    "filename": "bd9fda32e77549daba90b3c180566069_image_85.JPG",
+    "predicted_class": "Apple___healthy",
+    "display_name": "Healthy",
+    "confidence": 30.96,
+    "severity": "None",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 23.25,
+      "Apple___Apple_scab": 17.87,
+      "Apple___healthy": 30.96,
+      "Apple___Black_rot": 27.92
+    }
+  },
+  {
+    "id": "b7d7bbe9",
+    "timestamp": "2026-05-13T18:14:44.668983",
+    "filename": "71c19f0fac4f45e19c3a0b3da844e35b_image_44.JPG",
+    "predicted_class": "Apple___healthy",
+    "display_name": "Healthy",
+    "confidence": 53.98,
+    "severity": "None",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 29.32,
+      "Apple___Apple_scab": 10.49,
+      "Apple___healthy": 53.98,
+      "Apple___Black_rot": 6.21
+    }
+  },
+  {
+    "id": "c0c341ee",
+    "timestamp": "2026-05-13T18:14:27.323029",
+    "filename": "7966d095e65b48c5b85d99b7263e030c_image_27.JPG",
+    "predicted_class": "Apple___Black_rot",
+    "display_name": "Black Rot",
+    "confidence": 39.1,
+    "severity": "Severe",
+    "all_probs": {
+      "Apple___Cedar_apple_rust": 22.03,
+      "Apple___Apple_scab": 9.27,
+      "Apple___healthy": 29.59,
+      "Apple___Black_rot": 39.1
+    }
+  }
+]

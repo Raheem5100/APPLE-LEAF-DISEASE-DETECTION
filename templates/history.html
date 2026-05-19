@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Scan History — Apple Leaf Detection{% endblock %}
+
+{% block content %}
+<div class="history-page">
+
+    <div class="page-header">
+        <div class="ph-left">
+            <h1 class="page-title">Scan History</h1>
+            <p class="page-sub">All previous leaf disease detections</p>
+        </div>
+        <div class="ph-right">
+            {% if history %}
+            <div class="history-badge">{{ history|length }} Scans</div>
+            <form action="{{ url_for('delete_history') }}" method="POST"
+                  onsubmit="return confirm('Clear all scan history? This cannot be undone.')">
+                <button type="submit" class="clear-btn">🗑 Clear All</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if not history %}
+    <div class="empty-state">
+        <div class="es-icon">🍃</div>
+        <h2>No scans yet</h2>
+        <p>Upload your first apple leaf image to get started.</p>
+        <a href="{{ url_for('index') }}" class="action-btn primary">Start Scanning</a>
+    </div>
+
+    {% else %}
+
+    <!-- Filter Row -->
+    <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="Apple___healthy">🟢 Healthy</button>
+        <button class="filter-btn" data-filter="Apple___Cedar_apple_rust">🟡 Cedar Rust</button>
+        <button class="filter-btn" data-filter="Apple___Apple_scab">🔴 Apple Scab</button>
+        <button class="filter-btn" data-filter="Apple___Black_rot">🟣 Black Rot</button>
+    </div>
+
+    <!-- History Grid -->
+    <div class="history-grid" id="historyGrid">
+        {% for entry in history %}
+        {% set di = disease_info[entry.predicted_class] %}
+        <div class="history-card" data-class="{{ entry.predicted_class }}">
+            <div class="hc-image-wrap">
+                <img src="{{ url_for('static', filename='uploads/' + entry.filename) }}"
+                     alt="{{ di.display_name }}"
+                     class="hc-image"
+                     onerror="this.src=''; this.parentElement.innerHTML='<div class=\'hc-no-img\'>🍃</div>'">
+                <div class="hc-overlay" style="background: linear-gradient(to top, {{ di.color }}33, transparent)"></div>
+                <div class="hc-severity-badge" style="background: {{ di.color }}22; color: {{ di.color }}; border-color: {{ di.color }}44">
+                    {{ di.icon }} {{ di.severity }}
+                </div>
+            </div>
+            <div class="hc-body">
+                <div class="hc-top">
+                    <h3 class="hc-disease" style="color: {{ di.color }}">{{ di.display_name }}</h3>
+                    <span class="hc-id">#{{ entry.id }}</span>
+                </div>
+                <div class="hc-conf-row">
+                    <div class="hc-conf-bar-track">
+                        <div class="hc-conf-bar" style="width: {{ entry.confidence }}%; background: {{ di.color }}"></div>
+                    </div>
+                    <span class="hc-conf-val" style="color: {{ di.color }}">{{ entry.confidence }}%</span>
+                </div>
+                <div class="hc-meta">
+                    <span class="hc-date">
+                        🕐 {{ entry.timestamp[:10] }} {{ entry.timestamp[11:16] }}
+                    </span>
+                </div>
+                <div class="hc-prob-mini">
+                    {% for cls, prob in entry.all_probs.items() %}
+                    <div class="hpm-row">
+                        <span class="hpm-dot" style="background:
+                            {% if cls == 'Apple___healthy' %}#22C55E
+                            {% elif cls == 'Apple___Cedar_apple_rust' %}#F59E0B
+                            {% elif cls == 'Apple___Apple_scab' %}#EF4444
+                            {% else %}#8B5CF6{% endif %}">
+                        </span>
+                        <div class="hpm-bar-track">
+                            <div class="hpm-bar" style="width: {{ prob }}%;
+                                background:
+                                {% if cls == 'Apple___healthy' %}#22C55E
+                                {% elif cls == 'Apple___Cedar_apple_rust' %}#F59E0B
+                                {% elif cls == 'Apple___Apple_scab' %}#EF4444
+                                {% else %}#8B5CF6{% endif %}">
+                            </div>
+                        </div>
+                        <span class="hpm-val">{{ prob }}%</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Filter functionality
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.getAttribute('data-filter');
+        document.querySelectorAll('.history-card').forEach(card => {
+            if (filter === 'all' || card.getAttribute('data-class') === filter) {
+                card.style.display = '';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.3s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 30);
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

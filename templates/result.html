@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% block title %}Analysis Result — {{ disease_info.display_name }}{% endblock %}
+
+{% block content %}
+<div class="result-page">
+
+    <!-- Result Header -->
+    <div class="result-header">
+        <a href="{{ url_for('index') }}" class="back-btn">← New Scan</a>
+        <div class="result-meta">
+            <span class="meta-time">⏱ {{ prediction.timestamp[:19].replace('T',' ') }}</span>
+            <span class="meta-id">ID: {{ prediction.id }}</span>
+        </div>
+    </div>
+
+    <!-- Main Result Card -->
+    <div class="result-hero-card" style="--disease-color: {{ disease_info.color }}">
+        <div class="rhc-left">
+            <div class="result-image-wrap">
+                <img src="{{ image_url }}" alt="Analyzed leaf" class="result-img">
+                <div class="img-corner-tl"></div>
+                <div class="img-corner-br"></div>
+            </div>
+        </div>
+
+        <div class="rhc-right">
+            <div class="result-badge" style="background: {{ disease_info.color }}20; border-color: {{ disease_info.color }}40; color: {{ disease_info.color }}">
+                {{ disease_info.icon }} {{ disease_info.severity }} Severity
+            </div>
+            <h1 class="result-disease-name">{{ disease_info.display_name }}</h1>
+            <p class="result-class-tag">{{ prediction.predicted_class }}</p>
+
+            <div class="confidence-block">
+                <div class="conf-label">
+                    <span>Confidence</span>
+                    <span class="conf-value" style="color: {{ disease_info.color }}">{{ prediction.confidence }}%</span>
+                </div>
+                <div class="conf-bar-track">
+                    <div class="conf-bar-fill" style="width: {{ prediction.confidence }}%; background: {{ disease_info.color }}"
+                         data-width="{{ prediction.confidence }}"></div>
+                </div>
+            </div>
+
+            <p class="result-desc">{{ disease_info.description }}</p>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <h3>Probability Distribution</h3>
+                <p>Confidence across all disease classes</p>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="barChart" height="200"></canvas>
+            </div>
+        </div>
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <h3>Class Likelihood</h3>
+                <p>Relative confidence breakdown</p>
+            </div>
+            <div class="chart-wrap chart-donut-wrap">
+                <canvas id="donutChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Probability Table -->
+    <div class="prob-table-card">
+        <h3 class="ptc-title">Detailed Probability Scores</h3>
+        <div class="prob-rows">
+            {% for class_name, prob in prediction.all_probs.items() %}
+            {% set dinfo = disease_info if class_name == prediction.predicted_class else none %}
+            <div class="prob-row {% if class_name == prediction.predicted_class %}prob-row-active{% endif %}">
+                <div class="pr-label">
+                    {% if class_name == 'Apple___Cedar_apple_rust' %}
+                        <span class="pr-dot" style="background:#F59E0B"></span> Cedar Apple Rust
+                    {% elif class_name == 'Apple___Apple_scab' %}
+                        <span class="pr-dot" style="background:#EF4444"></span> Apple Scab
+                    {% elif class_name == 'Apple___healthy' %}
+                        <span class="pr-dot" style="background:#22C55E"></span> Healthy
+                    {% else %}
+                        <span class="pr-dot" style="background:#8B5CF6"></span> Black Rot
+                    {% endif %}
+                    {% if class_name == prediction.predicted_class %}
+                        <span class="pr-tag">✓ Predicted</span>
+                    {% endif %}
+                </div>
+                <div class="pr-bar-wrap">
+                    <div class="pr-bar"
+                         style="width: {{ prob }}%;
+                         background: {% if class_name == 'Apple___Cedar_apple_rust' %}#F59E0B{% elif class_name == 'Apple___Apple_scab' %}#EF4444{% elif class_name == 'Apple___healthy' %}#22C55E{% else %}#8B5CF6{% endif %}">
+                    </div>
+                </div>
+                <span class="pr-val">{{ prob }}%</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Symptoms -->
+    <div class="symptoms-card">
+        <h3 class="card-section-title">
+            <span class="cst-icon">🔬</span> Key Symptoms
+        </h3>
+        <div class="symptoms-grid">
+            {% for symptom in disease_info.symptoms %}
+            <div class="symptom-item">
+                <span class="sym-bullet" style="color: {{ disease_info.color }}">◆</span>
+                <span>{{ symptom }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Treatment Plans -->
+    <div class="treatment-section">
+        <div class="ts-header">
+            <h2 class="ts-title">
+                <span class="ts-icon">💊</span>
+                Treatment & Management Plan
+            </h2>
+            <p class="ts-sub">Professional recommendations for {{ disease_info.display_name }}</p>
+        </div>
+
+        <div class="cure-grid">
+            {% for cure in disease_info.cures %}
+            <div class="cure-card" style="--cure-color: {{ disease_info.color }}; animation-delay: {{ loop.index0 * 0.1 }}s">
+                <div class="cure-num" style="color: {{ disease_info.color }}">0{{ loop.index }}</div>
+                <h4 class="cure-title">{{ cure.title }}</h4>
+                <p class="cure-detail">{{ cure.detail }}</p>
+                <div class="cure-line" style="background: {{ disease_info.color }}"></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="result-actions">
+        <a href="{{ url_for('index') }}" class="action-btn primary">
+            <span>🔍</span> Scan Another Leaf
+        </a>
+        <a href="{{ url_for('history') }}" class="action-btn secondary">
+            <span>📋</span> View History
+        </a>
+        <a href="{{ url_for('stats') }}" class="action-btn secondary">
+            <span>📊</span> View Analytics
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const chartData = {{ chart_data | safe }};
+
+// Bar Chart
+const barCtx = document.getElementById('barChart').getContext('2d');
+new Chart(barCtx, {
+    type: 'bar',
+    data: {
+        labels: chartData.labels,
+        datasets: [{
+            label: 'Confidence (%)',
+            data: chartData.values,
+            backgroundColor: chartData.colors.map(c => c + '99'),
+            borderColor: chartData.colors,
+            borderWidth: 2,
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: '#0D1B0E',
+                titleColor: '#A3C9A8',
+                bodyColor: '#E8F0E9',
+                borderColor: '#2A4A2E',
+                borderWidth: 1,
+                callbacks: { label: ctx => `  ${ctx.parsed.y.toFixed(2)}%` }
+            }
+        },
+        scales: {
+            x: {
+                ticks: { color: '#6B8C6E', font: { family: 'Crimson Pro', size: 12 } },
+                grid: { color: '#1A2E1C' }
+            },
+            y: {
+                min: 0, max: 100,
+                ticks: { color: '#6B8C6E', callback: v => v + '%', font: { family: 'JetBrains Mono', size: 11 } },
+                grid: { color: '#1A2E1C' }
+            }
+        }
+    }
+});
+
+// Donut Chart
+const donutCtx = document.getElementById('donutChart').getContext('2d');
+new Chart(donutCtx, {
+    type: 'doughnut',
+    data: {
+        labels: chartData.labels,
+        datasets: [{
+            data: chartData.values,
+            backgroundColor: chartData.colors.map(c => c + 'BB'),
+            borderColor: chartData.colors,
+            borderWidth: 2,
+            hoverOffset: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        cutout: '65%',
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: '#A3C9A8',
+                    font: { family: 'Crimson Pro', size: 12 },
+                    padding: 16,
+                    usePointStyle: true
+                }
+            },
+            tooltip: {
+                backgroundColor: '#0D1B0E',
+                titleColor: '#A3C9A8',
+                bodyColor: '#E8F0E9',
+                borderColor: '#2A4A2E',
+                borderWidth: 1,
+                callbacks: { label: ctx => `  ${ctx.label}: ${ctx.parsed.toFixed(2)}%` }
+            }
+        }
+    }
+});
+
+// Animate confidence bar
+document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.querySelector('.conf-bar-fill');
+    if (bar) {
+        const w = bar.getAttribute('data-width');
+        setTimeout(() => { bar.style.width = w + '%'; }, 300);
+    }
+    document.querySelectorAll('.pr-bar').forEach(b => {
+        const w = b.style.width;
+        b.style.width = '0';
+        setTimeout(() => { b.style.width = w; }, 400);
+    });
+    document.querySelectorAll('.cure-card').forEach(c => {
+        c.classList.add('fade-in');
+    });
+});
+</script>
+{% endblock %}

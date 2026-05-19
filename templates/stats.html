@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+{% block title %}Analytics — Apple Leaf Detection{% endblock %}
+
+{% block content %}
+<div class="stats-page">
+
+    <div class="page-header">
+        <div class="ph-left">
+            <h1 class="page-title">Analytics Dashboard</h1>
+            <p class="page-sub">Insights from your disease detection history</p>
+        </div>
+        <div class="ph-right">
+            <a href="{{ url_for('index') }}" class="action-btn primary small">+ New Scan</a>
+        </div>
+    </div>
+
+    {% if stats.total == 0 %}
+    <div class="empty-state">
+        <div class="es-icon">📊</div>
+        <h2>No data yet</h2>
+        <p>Start scanning leaves to see analytics here.</p>
+        <a href="{{ url_for('index') }}" class="action-btn primary">Start Scanning</a>
+    </div>
+    {% else %}
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon" style="color: #A3C9A8">🔢</div>
+            <div class="kpi-num">{{ stats.total }}</div>
+            <div class="kpi-label">Total Scans</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="color: #22C55E">🌿</div>
+            <div class="kpi-num" style="color: #22C55E">{{ stats.healthy }}</div>
+            <div class="kpi-label">Healthy Leaves</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="color: #EF4444">⚠️</div>
+            <div class="kpi-num" style="color: #EF4444">{{ stats.diseased }}</div>
+            <div class="kpi-label">Diseased Leaves</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="color: #F59E0B">🎯</div>
+            <div class="kpi-num" style="color: #F59E0B">{{ stats.avg_confidence }}%</div>
+            <div class="kpi-label">Avg. Confidence</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="color: #A3C9A8">💚</div>
+            <div class="kpi-num">
+                {% if stats.total > 0 %}
+                {{ ((stats.healthy / stats.total) * 100)|round(1) }}%
+                {% else %}0%{% endif %}
+            </div>
+            <div class="kpi-label">Health Rate</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon" style="color: #EF4444">🦠</div>
+            <div class="kpi-num" style="color: #EF4444">
+                {% if stats.total > 0 %}
+                {{ ((stats.diseased / stats.total) * 100)|round(1) }}%
+                {% else %}0%{% endif %}
+            </div>
+            <div class="kpi-label">Disease Rate</div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="charts-row">
+        <div class="chart-card wide">
+            <div class="chart-card-header">
+                <h3>Disease Distribution</h3>
+                <p>Total occurrences by category</p>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="diseaseBarChart" height="180"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <h3>Class Breakdown</h3>
+                <p>Proportional analysis</p>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="diseasePieChart" height="180"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="charts-row">
+        <div class="chart-card full-width">
+            <div class="chart-card-header">
+                <h3>Healthy vs Diseased — Daily Trend</h3>
+                <p>Last 14 days of scan activity</p>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="trendChart" height="130"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disease Breakdown Cards -->
+    <div class="breakdown-section">
+        <h2 class="bs-title">Disease Breakdown</h2>
+        <div class="breakdown-grid">
+            {% for cls in class_names %}
+            {% set di = disease_info[cls] %}
+            {% set count = stats.disease_counts.get(cls, 0) %}
+            {% set pct = ((count / stats.total) * 100)|round(1) if stats.total > 0 else 0 %}
+            <div class="breakdown-card" style="--bc-color: {{ di.color }}">
+                <div class="bc-top">
+                    <span class="bc-icon">{{ di.icon }}</span>
+                    <span class="bc-severity" style="color: {{ di.color }}">{{ di.severity }}</span>
+                </div>
+                <h3 class="bc-name" style="color: {{ di.color }}">{{ di.display_name }}</h3>
+                <div class="bc-count">{{ count }} scans</div>
+                <div class="bc-bar-track">
+                    <div class="bc-bar" style="width: {{ pct }}%; background: {{ di.color }}"></div>
+                </div>
+                <div class="bc-pct">{{ pct }}% of total</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    {% if stats.recent_trend %}
+    <div class="recent-section">
+        <h2 class="bs-title">Recent Scan Activity</h2>
+        <div class="recent-table">
+            <div class="rt-header">
+                <span>Date</span>
+                <span>Disease</span>
+                <span>Confidence</span>
+            </div>
+            {% for item in stats.recent_trend %}
+            {% set di = disease_info[item.disease] %}
+            <div class="rt-row">
+                <span class="rt-date">{{ item.date }}</span>
+                <span class="rt-disease" style="color: {{ di.color }}">
+                    {{ di.icon }} {{ di.display_name }}
+                </span>
+                <span class="rt-conf" style="color: {{ di.color }}">{{ item.conf }}%</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% if stats.total > 0 %}
+<script>
+const diseaseChart = {{ disease_chart | safe }};
+const trendChartData = {{ trend_chart | safe }};
+
+const baseOpts = {
+    responsive: true,
+    plugins: {
+        tooltip: {
+            backgroundColor: '#0D1B0E',
+            titleColor: '#A3C9A8',
+            bodyColor: '#E8F0E9',
+            borderColor: '#2A4A2E',
+            borderWidth: 1
+        }
+    }
+};
+
+// Disease bar
+new Chart(document.getElementById('diseaseBarChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: diseaseChart.labels,
+        datasets: [{
+            label: 'Scans',
+            data: diseaseChart.values,
+            backgroundColor: diseaseChart.colors.map(c => c + '99'),
+            borderColor: diseaseChart.colors,
+            borderWidth: 2,
+            borderRadius: 8,
+        }]
+    },
+    options: {
+        ...baseOpts,
+        plugins: { ...baseOpts.plugins, legend: { display: false } },
+        scales: {
+            x: { ticks: { color: '#6B8C6E', font: { family: 'Crimson Pro' } }, grid: { color: '#1A2E1C' } },
+            y: { ticks: { color: '#6B8C6E', font: { family: 'JetBrains Mono', size: 11 }, stepSize: 1 }, grid: { color: '#1A2E1C' } }
+        }
+    }
+});
+
+// Pie
+new Chart(document.getElementById('diseasePieChart').getContext('2d'), {
+    type: 'pie',
+    data: {
+        labels: diseaseChart.labels,
+        datasets: [{
+            data: diseaseChart.values,
+            backgroundColor: diseaseChart.colors.map(c => c + 'BB'),
+            borderColor: '#0D1B0E',
+            borderWidth: 3,
+            hoverOffset: 12
+        }]
+    },
+    options: {
+        ...baseOpts,
+        plugins: {
+            ...baseOpts.plugins,
+            legend: {
+                position: 'bottom',
+                labels: { color: '#A3C9A8', font: { family: 'Crimson Pro', size: 12 }, padding: 12, usePointStyle: true }
+            }
+        }
+    }
+});
+
+// Trend line
+new Chart(document.getElementById('trendChart').getContext('2d'), {
+    type: 'line',
+    data: {
+        labels: trendChartData.labels.length ? trendChartData.labels : ['No data'],
+        datasets: [
+            {
+                label: 'Healthy',
+                data: trendChartData.healthy,
+                borderColor: '#22C55E',
+                backgroundColor: '#22C55E22',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#22C55E',
+                pointRadius: 4
+            },
+            {
+                label: 'Diseased',
+                data: trendChartData.diseased,
+                borderColor: '#EF4444',
+                backgroundColor: '#EF444422',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#EF4444',
+                pointRadius: 4
+            }
+        ]
+    },
+    options: {
+        ...baseOpts,
+        plugins: {
+            ...baseOpts.plugins,
+            legend: {
+                labels: { color: '#A3C9A8', font: { family: 'Crimson Pro', size: 13 }, usePointStyle: true }
+            }
+        },
+        scales: {
+            x: { ticks: { color: '#6B8C6E', font: { family: 'Crimson Pro' } }, grid: { color: '#1A2E1C' } },
+            y: { ticks: { color: '#6B8C6E', stepSize: 1, font: { family: 'JetBrains Mono', size: 11 } }, grid: { color: '#1A2E1C' } }
+        }
+    }
+});
+
+// Animate KPI numbers
+document.querySelectorAll('.kpi-num').forEach(el => {
+    const target = parseFloat(el.textContent.replace('%', ''));
+    if (isNaN(target)) return;
+    const isPercent = el.textContent.includes('%');
+    let current = 0;
+    const step = target / 40;
+    const interval = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = (isPercent ? current.toFixed(1) + '%' : Math.round(current));
+        if (current >= target) clearInterval(interval);
+    }, 25);
+});
+</script>
+{% endif %}
+{% endblock %}

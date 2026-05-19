@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Apple Leaf Disease Detection{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Crimson+Pro:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="leaf-bg"></div>
+    <div class="grain-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="{{ url_for('index') }}" class="nav-brand">
+                <span class="brand-icon">🍃</span>
+                <div class="brand-text">
+                    <span class="brand-title">Apple Leaf</span>
+                    <span class="brand-sub">Disease Detection</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">
+                    <span class="nav-icon">⬡</span> Detect
+                </a>
+                <a href="{{ url_for('history') }}" class="nav-link {% if request.endpoint == 'history' %}active{% endif %}">
+                    <span class="nav-icon">⬡</span> History
+                </a>
+                <a href="{{ url_for('stats') }}" class="nav-link {% if request.endpoint == 'stats' %}active{% endif %}">
+                    <span class="nav-icon">⬡</span> Analytics
+                </a>
+            </div>
+            <button class="nav-toggle" id="navToggle">☰</button>
+        </div>
+        <div class="nav-mobile" id="navMobile">
+            <a href="{{ url_for('index') }}" class="nav-link-m">⬡ Detect Disease</a>
+            <a href="{{ url_for('history') }}" class="nav-link-m">⬡ Scan History</a>
+            <a href="{{ url_for('stats') }}" class="nav-link-m">⬡ Analytics</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="footer-icon">🍃</span>
+                <span>Apple Leaf Disease Detection System</span>
+            </div>
+            <div class="footer-info">
+                <span>Powered by Deep Learning · TensorFlow · Flask</span>
+            </div>
+            <div class="footer-classes">
+                <span class="fclass healthy">● Healthy</span>
+                <span class="fclass rust">● Cedar Rust</span>
+                <span class="fclass scab">● Apple Scab</span>
+                <span class="fclass rot">● Black Rot</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
